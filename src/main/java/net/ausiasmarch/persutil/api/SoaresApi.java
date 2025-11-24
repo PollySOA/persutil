@@ -16,63 +16,63 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.ausiasmarch.persutil.entity.SoareEntity;
-import net.ausiasmarch.persutil.service.SoareService;
+import net.ausiasmarch.persutil.entity.SoaresEntity;
+import net.ausiasmarch.persutil.service.SoaresService;
 
 @RestController
 @RequestMapping("/soare")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class SoareApi {
+public class SoaresApi {
 
     @Autowired
-    SoareService oSoareService;
+    SoaresService oSoaresService;
 
     // ADMIN & USER: Obtener una pregunta por ID
     @GetMapping("/{id}")
-    public ResponseEntity<SoareEntity> get(@PathVariable(value = "id") Long id) {
-        return new ResponseEntity<SoareEntity>(oSoareService.get(id), HttpStatus.OK);
+    public ResponseEntity<SoaresEntity> get(@PathVariable(value = "id") Long id) {
+        return new ResponseEntity<SoaresEntity>(oSoaresService.get(id), HttpStatus.OK);
     }
 
     // ADMIN: Crear una nueva pregunta (puede ser usada por el admin para crear o por el usuario para proponer)
     @PostMapping("/")
-    public ResponseEntity<Long> create(@RequestBody SoareEntity oSoareEntity) {
-        return new ResponseEntity<Long>(oSoareService.create(oSoareEntity), HttpStatus.OK);
+    public ResponseEntity<Long> create(@RequestBody SoaresEntity oSoaresEntity) {
+        return new ResponseEntity<Long>(oSoaresService.create(oSoaresEntity), HttpStatus.OK);
     }
 
     // ADMIN: Actualizar una pregunta (incluye la aprobación/publicación)
     @PutMapping("/")
-    public ResponseEntity<SoareEntity> update(@RequestBody SoareEntity oSoareEntity) {
-        return new ResponseEntity<SoareEntity>(oSoareService.update(oSoareEntity), HttpStatus.OK);
+    public ResponseEntity<SoaresEntity> update(@RequestBody SoaresEntity oSoaresEntity) {
+        return new ResponseEntity<SoaresEntity>(oSoaresService.update(oSoaresEntity), HttpStatus.OK);
     }
 
     // ADMIN: Eliminar una pregunta
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable(value = "id") Long id) {
-        return new ResponseEntity<Long>(oSoareService.delete(id), HttpStatus.OK);
+        return new ResponseEntity<Long>(oSoaresService.delete(id), HttpStatus.OK);
     }
 
     // ADMIN: Listado paginado de todas las preguntas (para mantenimiento)
     @GetMapping("/admin")
-    public ResponseEntity<Page<SoareEntity>> getPageAdmin(Pageable oPageable, @RequestParam(name = "filter", required = false) String filter) {
-        return new ResponseEntity<Page<SoareEntity>>(oSoareService.getPage(oPageable, filter), HttpStatus.OK);
+    public ResponseEntity<Page<SoaresEntity>> getPageAdmin(Pageable oPageable, @RequestParam(name = "filter", required = false) String filter) {
+        return new ResponseEntity<Page<SoaresEntity>>(oSoaresService.getPage(oPageable, filter), HttpStatus.OK);
     }
 
     // USER: Listado paginado de preguntas publicadas (para el foro público)
     @GetMapping("/user")
-    public ResponseEntity<Page<SoareEntity>> getPageUser(Pageable oPageable, @RequestParam(name = "filter", required = false) String filter) {
-        return new ResponseEntity<Page<SoareEntity>>(oSoareService.getPageByPublicacion(oPageable, filter), HttpStatus.OK);
+    public ResponseEntity<Page<SoaresEntity>> getPageUser(Pageable oPageable, @RequestParam(name = "filter", required = false) String filter) {
+        return new ResponseEntity<Page<SoaresEntity>>(oSoaresService.getPageByPublicacion(oPageable, filter), HttpStatus.OK);
     }
 
     // ADMIN: Creación masiva de preguntas (populate)
     @PostMapping("/populate/{amount}")
     public ResponseEntity<Long> populate(@PathVariable(value = "amount") int amount) {
-        return new ResponseEntity<Long>(oSoareService.populate(amount), HttpStatus.OK);
+        return new ResponseEntity<Long>(oSoaresService.populate(amount), HttpStatus.OK);
     }
 
     // ADMIN: Vaciar la tabla de preguntas (empty)
     @DeleteMapping("/empty")
     public ResponseEntity<Long> empty() {
-        return new ResponseEntity<Long>(oSoareService.empty(), HttpStatus.OK);
+        return new ResponseEntity<Long>(oSoaresService.empty(), HttpStatus.OK);
     }
 
 }
