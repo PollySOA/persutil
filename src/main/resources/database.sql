@@ -517,4 +517,42 @@ ALTER TABLE `tarea`
 --
 ALTER TABLE `uski_libro_visita`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `zanon`
+--
+
+CREATE TABLE `zanon` (
+  `id` bigint NOT NULL,
+  `titulo` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
+  `contenido` longtext COLLATE utf32_unicode_ci NOT NULL,
+  `etiquetas` varchar(1024) COLLATE utf32_unicode_ci NOT NULL,
+  `fecha_creacion` datetime NOT NULL,
+  `fecha_modificacion` datetime DEFAULT NULL,
+  `duracion` int NOT NULL,
+  `dificultad` enum('baja','media','alta') CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `publico` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `zanon`
+--
+ALTER TABLE `zanon`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `zanon`
+--
+ALTER TABLE `zanon`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
 COMMIT;
