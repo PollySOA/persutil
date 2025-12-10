@@ -21,7 +21,7 @@ public class SessionApi {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody SessionBean oSessionBean) {
-        return ResponseEntity.ok(oSessionService.login(oSessionBean));
+        return ResponseEntity.ok("\"" + oSessionService.login(oSessionBean) + "\"");
     }
 
 
