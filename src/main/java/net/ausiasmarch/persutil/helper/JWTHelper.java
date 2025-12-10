@@ -1,11 +1,34 @@
 package net.ausiasmarch.persutil.helper;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 public class JWTHelper {
-    
+
     private static final String SECRET_KEY = "tu_clave_secreta_aqui_1234567890_DAWSIAS"; // Cambia esto por una clave segura
+
+    public static String validate(String strToken) {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .build()
+                .parseClaimsJws(strToken);
+        if (jws == null || jws.getBody() == null) {
+            return null; // token no válido
+        } else {
+
+            // pendiente para mañana: comprobar expiración del token
+            
+
+
+
+
+            // extraer el nombre de usuario del token
+            String username = jws.getBody().get("username", String.class);
+            return username;
+        }
+    }
 
     public static String generateJWT(String username) {
         return Jwts.builder()
@@ -17,7 +40,5 @@ public class JWTHelper {
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
                 .compact();
     }
-
-
 
 }
