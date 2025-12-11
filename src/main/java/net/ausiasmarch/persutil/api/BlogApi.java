@@ -70,8 +70,6 @@ public class BlogApi {
         return ResponseEntity.ok(oBlogService.rellenaBlog(numPosts));
     }
 
-
-
     
     // ----------------------------CRUD---------------------------------
 
