@@ -20,6 +20,9 @@ public class BlogService {
     @Autowired
     AleatorioService oAleatorioService;
 
+    @Autowired
+    SessionService oSessionService;
+
     ArrayList<String> alFrases = new ArrayList<>();
 
     public BlogService() {
@@ -42,26 +45,34 @@ public class BlogService {
     }
 
     public Long rellenaBlog(Long numPosts) {
+
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
+
         for (long j = 0; j < numPosts; j++) {
             // crea entity blog y la rellana con datos aleatorios
             BlogEntity oBlogEntity = new BlogEntity();
-            oBlogEntity.setTitulo(alFrases.get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, alFrases.size() - 1)));
+            oBlogEntity.setTitulo(
+                    alFrases.get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, alFrases.size() - 1)));
             // rellena contenido
             String contenidoGenerado = "";
             int numFrases = oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(1, 30);
             for (int i = 1; i <= numFrases; i++) {
-                contenidoGenerado += alFrases.get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, alFrases.size() - 1)) + " ";
+                contenidoGenerado += alFrases
+                        .get(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, alFrases.size() - 1)) + " ";
                 if (oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 10) == 1) {
                     contenidoGenerado += "\n";
                 }
             }
             oBlogEntity.setContenido(contenidoGenerado.trim());
             contenidoGenerado += "\n";
-            // extraer 5 palabras aleatorias del contenido  para las etiquetas
+            // extraer 5 palabras aleatorias del contenido para las etiquetas
             String[] palabras = contenidoGenerado.split(" ");
             // eliminar signos de puntuacion de las palabras
             for (int i = 0; i < palabras.length; i++) {
-                palabras[i] = palabras[i].replace(".", "").replace(",", "").replace(";", "").replace(":", "").replace("!", "").replace("?", "");
+                palabras[i] = palabras[i].replace(".", "").replace(",", "").replace(";", "").replace(":", "")
+                        .replace("!", "").replace("?", "");
             }
             // convertir todas las palabras a minúsculas
             for (int i = 0; i < palabras.length; i++) {
@@ -77,7 +88,8 @@ public class BlogService {
             palabras = alPalabrasFiltradas.toArray(new String[0]);
             String etiquetas = "";
             for (int i = 0; i < 5; i++) {
-                String palabra = palabras[oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, palabras.length - 1)];
+                String palabra = palabras[oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0,
+                        palabras.length - 1)];
                 if (!etiquetas.contains(palabra)) {
                     etiquetas += palabra + ", ";
                 }
@@ -90,6 +102,8 @@ public class BlogService {
             // establecer fecha de creación y modificación
             oBlogEntity.setFechaCreacion(LocalDateTime.now());
             oBlogEntity.setFechaModificacion(null);
+            // poner la flag de publicado aleatoriamente
+            oBlogEntity.setPublicado(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(0, 1) == 1);
             // guardar entity en base de datos
             oBlogRepository.save(oBlogEntity);
         }
@@ -102,6 +116,9 @@ public class BlogService {
     }
 
     public Long create(BlogEntity blogEntity) {
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
         blogEntity.setFechaCreacion(LocalDateTime.now());
         blogEntity.setFechaModificacion(null);
         oBlogRepository.save(blogEntity);
@@ -109,27 +126,65 @@ public class BlogService {
     }
 
     public Long update(BlogEntity blogEntity) {
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
         BlogEntity existingBlog = oBlogRepository.findById(blogEntity.getId())
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
         existingBlog.setTitulo(blogEntity.getTitulo());
         existingBlog.setContenido(blogEntity.getContenido());
         existingBlog.setEtiquetas(blogEntity.getEtiquetas());
+        existingBlog.setPublicado(blogEntity.getPublicado());
         existingBlog.setFechaModificacion(LocalDateTime.now());
         oBlogRepository.save(existingBlog);
         return existingBlog.getId();
     }
 
     public Long delete(Long id) {
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
         oBlogRepository.deleteById(id);
         return id;
     }
 
     public Page<BlogEntity> getPage(Pageable oPageable) {
-        return oBlogRepository.findAll(oPageable);
+        // si no hay session activa, solo devolver los publicados
+        if (!oSessionService.isSessionActive()) {
+            return oBlogRepository.findByPublicadoTrue(oPageable);            
+        } else {
+            return oBlogRepository.findAll(oPageable);
+        }
     }
 
     public Long count() {
         return oBlogRepository.count();
+    }
+
+    // ---
+
+    public Long publicar(Long id) {
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
+        BlogEntity existingBlog = oBlogRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        existingBlog.setPublicado(true);
+        existingBlog.setFechaModificacion(LocalDateTime.now());
+        oBlogRepository.save(existingBlog);
+        return existingBlog.getId();
+    }
+
+    public Long despublicar(Long id) {
+        if (!oSessionService.isSessionActive()) {
+            throw new RuntimeException("No active session");
+        }
+        BlogEntity existingBlog = oBlogRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        existingBlog.setPublicado(false);
+        existingBlog.setFechaModificacion(LocalDateTime.now());
+        oBlogRepository.save(existingBlog);
+        return existingBlog.getId();
     }
 
 }

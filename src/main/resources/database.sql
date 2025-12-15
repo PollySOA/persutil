@@ -59,6 +59,7 @@ CREATE TABLE `blog` (
   `titulo` varchar(1024) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `contenido` longtext CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `etiquetas` varchar(1024) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
+  `publicado` tinyint NOT NULL DEFAULT '0',
   `fecha_creacion` datetime NOT NULL,
   `fecha_modificacion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;

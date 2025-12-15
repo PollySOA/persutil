@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
- 
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,7 +12,6 @@ import lombok.Setter;
 public class TokenBean {
 
     private String token;
-   
+    
 
 }
-

@@ -40,13 +40,13 @@ public class BlogApi {
         return new ResponseEntity<>("\"Hola buenos dias desde el blog\"", HttpStatus.OK);
     }
 
-    @GetMapping("/aleatorio") //endpoint
+    @GetMapping("/aleatorio") // endpoint
     public ResponseEntity<Integer> aleatorio() {
         int numeroAleatorio = (int) (Math.random() * 100) + 1;
         return ResponseEntity.ok(numeroAleatorio);
     }
 
-    @GetMapping("/aleatorio/{min}/{max}") //endpoint
+    @GetMapping("/aleatorio/{min}/{max}") // endpoint
     public ResponseEntity<Integer> aleatorioEnRango(
             @PathVariable int min,
             @PathVariable int max) {
@@ -54,25 +54,22 @@ public class BlogApi {
         return ResponseEntity.ok(numeroAleatorio);
     }
 
-    @GetMapping("/aleatorio/service/{min}/{max}") //endpoint
+    @GetMapping("/aleatorio/service/{min}/{max}") // endpoint
     public ResponseEntity<Integer> aleatorioUsandoServiceEnRango(
             @PathVariable int min,
             @PathVariable int max) {
         return ResponseEntity.ok(oAleatorioService.GenerarNumeroAleatorioEnteroEnRango(min, max));
     }
 
-    //---------------------------Rellenar datos fake blog---------------------------------
+    // ---------------------------Rellenar datos fake
+    // blog---------------------------------
 
     @GetMapping("/rellena/{numPosts}")
     public ResponseEntity<Long> rellenaBlog(
-            @PathVariable Long numPosts
-    ) {
+            @PathVariable Long numPosts) {
         return ResponseEntity.ok(oBlogService.rellenaBlog(numPosts));
     }
 
-
-
-    
     // ----------------------------CRUD---------------------------------
 
     // obtener post por id
@@ -103,12 +100,24 @@ public class BlogApi {
     @GetMapping("")
     public ResponseEntity<Page<BlogEntity>> getPage(Pageable oPageable) {
         return ResponseEntity.ok(oBlogService.getPage(oPageable));
-        
     }
 
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(oBlogService.count()); 
+        return ResponseEntity.ok(oBlogService.count());
     }
 
+    // -----
+
+    // publicar post
+    @PutMapping("/publicar/{id}")
+    public ResponseEntity<Long> publicar(@PathVariable Long id) {
+        return ResponseEntity.ok(oBlogService.publicar(id));
+    }
+
+    // despublicar post
+    @PutMapping("/despublicar/{id}")
+    public ResponseEntity<Long> despublicar(@PathVariable Long id) {
+        return ResponseEntity.ok(oBlogService.despublicar(id));
+    }
 }
