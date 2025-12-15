@@ -2,6 +2,7 @@ package net.ausiasmarch.persutil.filter;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.Filter;
@@ -11,10 +12,15 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.ausiasmarch.persutil.helper.JWTHelper;
+import net.ausiasmarch.persutil.service.JWTService;
+
 
 @Component
 public class JwtFilter implements Filter {
+
+
+    @Autowired
+    private JWTService oJwtService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -35,7 +41,7 @@ public class JwtFilter implements Filter {
                 try {
                     // Aquí va la lógica para validar el token JWT
                     // Si el token es válido, continuar con la cadena de filtros
-                    String username = JWTHelper.validate(authToken);
+                    String username = oJwtService.validate(authToken);
                     if (username != null) {
                         // Si el token es válido, continuar con la cadena de filtros
                         ((HttpServletRequest) request).setAttribute("username", username);

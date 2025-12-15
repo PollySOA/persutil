@@ -1,17 +1,24 @@
-package net.ausiasmarch.persutil.helper;
+package net.ausiasmarch.persutil.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-public class JWTHelper {
+@Service
+public class JWTService {
 
-    private static final String SECRET_KEY = "tu_clave_secreta_aqui_1234567890_DAWSIAS"; // Cambia esto por una clave segura
-    private static final String ISSUER = "ausiasmarch.net";
-    private static final String SUBJECT = "DAWsiasmarch-PERSUTIL";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+    @Value("${jwt.issuer}")
+    private String ISSUER;
+    @Value("${jwt.subject}")
+    private String SUBJECT;
 
-    public static String validate(String strToken) {
+    public String validate(String strToken) {
         Jws<Claims> jws = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
                 .build()
@@ -46,7 +53,7 @@ public class JWTHelper {
         }
     }
 
-    public static String generateJWT(String username) {
+    public String generateJWT(String username) {
         return Jwts.builder()
                 .setIssuer(ISSUER)
                 .setSubject(SUBJECT)
