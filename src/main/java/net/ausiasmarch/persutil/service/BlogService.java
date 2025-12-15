@@ -114,7 +114,15 @@ public class BlogService {
 
     // ----------------------------CRUD---------------------------------
     public BlogEntity get(Long id) {
-        return oBlogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        if (oSessionService.isSessionActive()) {
+            return oBlogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        } else{
+            BlogEntity blogEntity = oBlogRepository.findByIdAndPublicadoTrue(id);
+            if (blogEntity == null) {
+                throw new ResourceNotFoundException("Post not found or not published");
+            }
+            return blogEntity;
+        }
     }
 
     public Long create(BlogEntity blogEntity) {
@@ -153,7 +161,7 @@ public class BlogService {
     public Page<BlogEntity> getPage(Pageable oPageable) {
         // si no hay session activa, solo devolver los publicados
         if (!oSessionService.isSessionActive()) {
-            return oBlogRepository.findByPublicadoTrue(oPageable);            
+            return oBlogRepository.findByPublicadoTrue(oPageable);
         } else {
             return oBlogRepository.findAll(oPageable);
         }
@@ -164,7 +172,6 @@ public class BlogService {
     }
 
     // ---
-
     public Long publicar(Long id) {
         if (!oSessionService.isSessionActive()) {
             throw new UnauthorizedException("No active session");

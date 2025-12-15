@@ -13,4 +13,6 @@ public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
 
     Page<BlogEntity> findByPublicadoFalse(Pageable oPageable);
 
+    BlogEntity findByIdAndPublicadoTrue(Long id);
+
 }
