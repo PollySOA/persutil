@@ -74,4 +74,24 @@ public class GarciaApi {
         return ResponseEntity.ok(GarciaService.count());
     }
 
+    @GetMapping("/publicados")
+    public ResponseEntity<Page<GarciaEntity>> getPagePublicados(Pageable oPageable) {
+        return ResponseEntity.ok(GarciaService.getPagePublicados(oPageable));
+    }
+
+    @PutMapping("/publicar/{id}")
+    public ResponseEntity<Long> publicar(@PathVariable Long id) {
+        return ResponseEntity.ok(GarciaService.publicar(id));
+    }
+
+    @PutMapping("/despublicar/{id}")
+    public ResponseEntity<Long> despublicar(@PathVariable Long id) {
+        return ResponseEntity.ok(GarciaService.despublicar(id));
+    }
+
+    @DeleteMapping("/deleteall")
+    public ResponseEntity<Long> deleteAll() {
+        return ResponseEntity.ok(GarciaService.deleteAll());
+    }
+
 }
